@@ -221,7 +221,7 @@ check_node_status() {
         initialized=1
         status="已初始化"
     else
-        if [ -f "$node_dir/Llama-3.2-3B-Instruct-Q5_K_M.gguf" ] && [ -f "$node_dir/nomic-embed-text-v1.5.f16.gguf" ] && \
+        if [ -f "$node_dir/Llama-3.2-1B-Instruct-Q5_K_M.gguf" ] && [ -f "$node_dir/nomic-embed-text-v1.5.f16.gguf" ] && \
            [ -f "$node_dir/config.json" ] && [ -d "$node_dir/qdrant/storage" ]; then
             initialized=1
             status="已初始化"
@@ -266,12 +266,12 @@ install_nodes() {
 
     ensure_dir "$SHARED_MODEL_DIR"
     if [ ! -f "$SHARED_MODEL_DIR/Llama-3.2-1B-Instruct-Q5_K_M.gguf" ]; then
-        info "下载共享模型 Llama-3.2-3B-Instruct-Q5_K_M.gguf ..."
+        info "下载共享模型 Llama-3.2-1B-Instruct-Q5_K_M.gguf ..."
         curl -L "https://huggingface.co/gaianet/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q5_K_M.gguf" -o "$SHARED_MODEL_DIR/Llama-3.2-1B-Instruct-Q5_K_M.gguf" || error "模型下载失败！"
     fi
     if [ ! -f "$SHARED_MODEL_DIR/nomic-embed-text-v1.5.f16.gguf" ]; then
         info "下载共享模型 nomic-embed-text-v1.5.f16.gguf ..."
-        curl -L "https://huggingface.co/gaianet/Llama-3.2-1B-Instruct-GGUF/resolve/main/Llama-3.2-1B-Instruct-Q5_K_M.gguf" -o "$SHARED_MODEL_DIR/nomic-embed-text-v1.5.f16.gguf" || error "模型下载失败！"
+        curl -L "https://huggingface.co/gaianet/Nomic-embed-text-v1.5-Embedding-GGUF/resolve/main/nomic-embed-text-v1.5.f16.gguf" -o "$SHARED_MODEL_DIR/nomic-embed-text-v1.5.f16.gguf" || error "模型下载失败！"
     fi
 
     echo "确认安装并自动初始化、启动 $NODE_COUNT 个节点（从 $START_NODE 到 $END_NODE）？(y/n)"
@@ -294,7 +294,7 @@ install_nodes() {
         curl -sSfL "$INSTALL_URL" | bash -s -- --base "$NODE_DIR" || { warning "节点 $NODE_ID 安装失败！"; continue; }
         update_config "$NODE_DIR" "$API_PORT" "$QDRANT_PORT" "$QDRANT_GRPC_PORT"
 
-        cp -f "$SHARED_MODEL_DIR/Llama-3.2-3B-Instruct-Q5_K_M.gguf" "$NODE_DIR/" || warning "复制 Llama 模型失败"
+        cp -f "$SHARED_MODEL_DIR/Llama-3.2-1B-Instruct-Q5_K_M.gguf" "$NODE_DIR/" || warning "复制 Llama 模型失败"
         cp -f "$SHARED_MODEL_DIR/nomic-embed-text-v1.5.f16.gguf" "$NODE_DIR/" || warning "复制 Nomic 模型失败"
 
         ORIGINAL_DIR=$(pwd)
